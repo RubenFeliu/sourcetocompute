@@ -15,15 +15,15 @@ export default function HeroOverlay() {
   return (
     <>
       {/* Mode badge */}
-      <div className="pointer-events-none absolute right-4 top-20 z-20 md:right-8">
+      <div className="pointer-events-none absolute right-3 top-16 z-20 md:right-8 md:top-20">
         <span className="chip border-cyanx-600/40 text-cyanx-500">
           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-cyanx-500" />
           Conceptual Digital Twin
         </span>
       </div>
 
-      {/* Hero copy */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-ink-950 via-ink-950/70 to-transparent pb-8 pt-24">
+      {/* Hero copy — desktop overlay only; mobile gets a static hero below the canvas */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 hidden bg-gradient-to-t from-ink-950 via-ink-950/70 to-transparent pb-8 pt-24 md:block">
         <div className="mx-auto max-w-[1600px] px-4 md:px-8">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
@@ -88,7 +88,7 @@ export default function HeroOverlay() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 2 }}
-        className="pointer-events-none absolute bottom-2 left-1/2 z-20 -translate-x-1/2 text-steel-400"
+        className="pointer-events-none absolute bottom-2 left-1/2 z-20 hidden -translate-x-1/2 text-steel-400 md:block"
       >
         <ChevronDown size={18} className="animate-bounce" />
       </motion.div>

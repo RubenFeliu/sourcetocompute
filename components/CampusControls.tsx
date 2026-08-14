@@ -3,12 +3,12 @@
 import { useState } from "react";
 import {
   Zap, Network, RotateCcw, Layers as LayersIcon, Activity, Gauge,
-  ChevronDown, ChevronUp,
+  ChevronDown, ChevronUp, SlidersHorizontal, X,
 } from "lucide-react";
 import { useCampus } from "@/lib/store";
 import { LAYERS, SCENARIOS, type LayerId } from "@/lib/data";
 
-export default function CampusControls() {
+function ControlsContent({ onAction }: { onAction?: () => void }) {
   const {
     layer, setLayer, scenario, setScenario, powerFlow, togglePowerFlow,
     otNetwork, toggleOtNetwork, quality, setQuality, resetCamera,
@@ -21,10 +21,7 @@ export default function CampusControls() {
   const activeScenario = SCENARIOS.find((s) => s.id === scenario)!;
 
   return (
-    <div
-      id="campus-controls"
-      className="pointer-events-auto absolute left-4 top-20 z-30 w-[280px] space-y-2 md:left-8"
-    >
+    <div className="space-y-2">
       {/* primary toggles */}
       <div className="panel flex items-center gap-2 p-2">
         <button
@@ -48,7 +45,10 @@ export default function CampusControls() {
           <Network size={12} /> OT Network
         </button>
         <button
-          onClick={resetCamera}
+          onClick={() => {
+            resetCamera();
+            onAction?.();
+          }}
           title="Reset camera"
           className="rounded p-1.5 text-steel-400 transition hover:text-cyanx-500"
         >
@@ -72,7 +72,10 @@ export default function CampusControls() {
             {SCENARIOS.map((s) => (
               <button
                 key={s.id}
-                onClick={() => setScenario(s.id)}
+                onClick={() => {
+                  setScenario(s.id);
+                  onAction?.();
+                }}
                 className={`block w-full rounded px-2 py-1.5 text-left text-xs transition ${
                   scenario === s.id
                     ? "bg-cyanx-600/15 text-cyanx-400 ring-1 ring-cyanx-600/40"
@@ -177,5 +180,53 @@ export default function CampusControls() {
         ))}
       </div>
     </div>
+  );
+}
+
+export default function CampusControls() {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  return (
+    <>
+      {/* Desktop: persistent side panel */}
+      <div
+        id="campus-controls"
+        className="pointer-events-auto absolute left-4 top-20 z-30 hidden w-[280px] md:left-8 md:block"
+      >
+        <ControlsContent />
+      </div>
+
+      {/* Mobile: floating button + slide-up sheet */}
+      <button
+        onClick={() => setMobileOpen(true)}
+        className="absolute bottom-3 left-3 z-30 flex items-center gap-2 rounded-full border border-cyanx-600/50 bg-ink-950/90 px-4 py-2 font-mono text-[10px] uppercase tracking-wider2 text-cyanx-500 shadow-lg shadow-black/40 backdrop-blur-md md:hidden"
+      >
+        <SlidersHorizontal size={13} /> Controls
+      </button>
+      {mobileOpen && (
+        <div className="fixed inset-0 z-[60] flex flex-col justify-end bg-ink-950/60 backdrop-blur-sm md:hidden">
+          <button
+            aria-label="Close controls"
+            className="flex-1"
+            onClick={() => setMobileOpen(false)}
+          />
+          <div className="max-h-[75vh] overflow-y-auto rounded-t-2xl border-t border-ink-600 bg-ink-950 p-4 pb-8">
+            <div className="mb-3 flex items-center justify-between">
+              <span className="font-mono text-[10px] uppercase tracking-wider2 text-steel-300">
+                Campus Controls
+              </span>
+              <button
+                onClick={() => setMobileOpen(false)}
+                className="rounded p-1 text-steel-400"
+                aria-label="Close"
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <ControlsContent onAction={() => setMobileOpen(false)} />
+          </div>
+        </div>
+      )}
+    </>
   );
 }

@@ -6,6 +6,7 @@ import HeroOverlay from "@/components/HeroOverlay";
 import CampusControls from "@/components/CampusControls";
 import InfoDrawer from "@/components/InfoDrawer";
 import ScenarioStatus from "@/components/ScenarioStatus";
+import MobileHero from "@/components/MobileHero";
 import OrgChart from "@/components/sections/OrgChart";
 import Schedule from "@/components/sections/Schedule";
 import Advisory from "@/components/sections/Advisory";
@@ -34,14 +35,18 @@ export default function Home() {
     <main id="top">
       <Nav />
 
-      {/* Hero + 3D campus */}
-      <section id="campus" className="relative h-screen w-full overflow-hidden">
+      {/* Hero + 3D campus — phones get a shorter canvas with the hero copy below */}
+      <section
+        id="campus"
+        className="relative h-[62vh] min-h-[420px] w-full overflow-hidden pt-14 md:h-screen md:pt-0"
+      >
         <CampusCanvas />
         <HeroOverlay />
         <CampusControls />
         <ScenarioStatus />
         <InfoDrawer />
       </section>
+      <MobileHero />
 
       <AiFactory />
       <Pillars />

@@ -354,7 +354,7 @@ export default function Scene() {
         >
           <button
             onClick={() => select(id)}
-            className={`group flex flex-col items-center transition-opacity ${
+            className={`group flex flex-col items-center transition-opacity max-md:scale-[0.65] ${
               emphasized(id) && energized(id) ? "opacity-100" : "opacity-30"
             }`}
           >
