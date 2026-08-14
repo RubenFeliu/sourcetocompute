@@ -15,18 +15,21 @@ import {
 } from "./assets";
 import { FlowRoute, OtArc, HighlightRing, CameraRig, type OtStyle } from "./flows";
 
-// Asset world positions (group origins)
+// Asset world positions (group origins) — orthogonal masterplan grid, no overlaps:
+//   switchyard 40x30 @ (0,0) · datacenter 62x44 @ (58,8) · generation 54x34 @ (-58,20)
+//   bess 34x26 @ (-44,-30) · solar 46x32 @ (-92,-34) · loadbank 16x11 @ (-58,48)
+//   maincontrol 18x14 @ (20,42) · backupcontrol 18x14 @ (-98,42) · poi corridor to NE
 const POS: Record<AssetId, [number, number, number]> = {
-  datacenter: [46, 0, 6],
-  generation: [-52, 0, 18],
-  bess: [-36, 0, -24],
-  solar: [-70, 0, -34],
+  datacenter: [58, 0, 8],
+  generation: [-58, 0, 20],
+  bess: [-44, 0, -30],
+  solar: [-92, 0, -34],
   switchyard: [0, 0, 0],
   poi: [6, 0, -18],
-  maincontrol: [16, 0, 30],
-  backupcontrol: [-78, 0, 44],
+  maincontrol: [20, 0, 42],
+  backupcontrol: [-98, 0, 42],
   otnetwork: [0, 0, 0],
-  loadbank: [-32, 0, 42],
+  loadbank: [-58, 0, 48],
 };
 
 const RING_R: Record<AssetId, number> = {
@@ -41,13 +44,13 @@ const LABEL_Y: Record<AssetId, number> = {
 
 // OT network anchor points (top of each asset)
 const OT_ANCHOR: Partial<Record<AssetId, [number, number, number]>> = {
-  generation: [-52, 6, 18],
-  bess: [-36, 4, -24],
-  solar: [-70, 3, -34],
+  generation: [-58, 6, 20],
+  bess: [-44, 4, -30],
+  solar: [-92, 3, -34],
   switchyard: [0, 7, 0],
-  datacenter: [46, 6, 6],
-  maincontrol: [16, 5, 30],
-  backupcontrol: [-78, 5, 44],
+  datacenter: [58, 6, 8],
+  maincontrol: [20, 5, 42],
+  backupcontrol: [-98, 5, 42],
 };
 
 export default function Scene() {
@@ -207,32 +210,70 @@ export default function Scene() {
         <meshStandardMaterial map={grassMap} roughness={1} metalness={0} />
       </mesh>
       {/* graded gravel apron around the developed core */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-8, -0.02, 2]} receiveShadow>
-        <planeGeometry args={[220, 150]} />
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-12, -0.02, 4]} receiveShadow>
+        <planeGeometry args={[240, 156]} />
         <meshStandardMaterial map={gravelMap} roughness={1} metalness={0} />
       </mesh>
-      {/* main campus spine road */}
-      <mesh position={[-10, 0.01, 4]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[150, 6]} />
+      {/* ── Orthogonal road network ── */}
+      {/* main E-W spine along the south service corridor (z = 42) */}
+      <mesh position={[-37, 0.01, 42]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[154, 6]} />
         <meshStandardMaterial color="#4a4e54" roughness={0.95} />
       </mesh>
-      {/* center line */}
-      <mesh position={[-10, 0.02, 4]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[150, 0.18]} />
+      <mesh position={[-37, 0.02, 42]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[154, 0.18]} />
         <meshStandardMaterial color="#e8e4d2" roughness={0.9} />
       </mesh>
-      <mesh position={[-40, 0.01, 10]} rotation={[-Math.PI / 2, 0, Math.PI / 2.6]}>
-        <planeGeometry args={[60, 5]} />
+      {/* N-S connector: spine → switchyard south gate (x = 0) */}
+      <mesh position={[0, 0.01, 29]} rotation={[-Math.PI / 2, 0, Math.PI / 2]}>
+        <planeGeometry args={[26, 5]} />
         <meshStandardMaterial color="#4a4e54" roughness={0.95} />
       </mesh>
-      <mesh position={[-56, 0.01, 32]} rotation={[-Math.PI / 2, 0, Math.PI / 3.4]}>
+      {/* N-S connector: spine → solar / west area (x = -88, stops short of PV field) */}
+      <mesh position={[-88, 0.01, 14]} rotation={[-Math.PI / 2, 0, Math.PI / 2]}>
         <planeGeometry args={[56, 5]} />
         <meshStandardMaterial color="#4a4e54" roughness={0.95} />
       </mesh>
-      <mesh position={[14, 0.01, 18]} rotation={[-Math.PI / 2, 0, Math.PI / 2]}>
-        <planeGeometry args={[30, 5]} />
+      {/* E-W service road between generation/BESS and switchyard (z = -8) */}
+      <mesh position={[-53, 0.01, -8]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[70, 5]} />
         <meshStandardMaterial color="#4a4e54" roughness={0.95} />
       </mesh>
+      {/* N-S connector: spine → data center west gate (x = 24) */}
+      <mesh position={[24, 0.01, 36]} rotation={[-Math.PI / 2, 0, Math.PI / 2]}>
+        <planeGeometry args={[12, 5]} />
+        <meshStandardMaterial color="#4a4e54" roughness={0.95} />
+      </mesh>
+
+      {/* ── Site logistics (warehouse + laydown + parking) ── */}
+      <group position={[42, 0, 46]}>
+        <mesh position={[0, 0.05, 0]} receiveShadow>
+          <boxGeometry args={[22, 0.1, 16]} />
+          <meshStandardMaterial color="#b9b2a1" roughness={0.95} />
+        </mesh>
+        <mesh position={[-4, 2, -2]} castShadow>
+          <boxGeometry args={[12, 4, 9]} />
+          <meshStandardMaterial color="#d5d9dc" roughness={0.55} metalness={0.15} />
+        </mesh>
+        <mesh position={[-4, 4.15, -2]}>
+          <boxGeometry args={[12.6, 0.3, 9.6]} />
+          <meshStandardMaterial color="#9aa1a7" roughness={0.6} metalness={0.3} />
+        </mesh>
+        {/* laydown containers */}
+        {[0, 1, 2].map((i) => (
+          <mesh key={i} position={[5 + (i % 2) * 2.4, 0.75, -4 + i * 2.6]} castShadow>
+            <boxGeometry args={[4.4, 1.4, 1.7]} />
+            <meshStandardMaterial color={i === 1 ? "#7d99ae" : "#c8beab"} roughness={0.6} />
+          </mesh>
+        ))}
+        {/* parking stripes */}
+        {[0, 1, 2, 3, 4].map((i) => (
+          <mesh key={i} position={[-8 + i * 3, 0.11, 6]} rotation={[-Math.PI / 2, 0, 0]}>
+            <planeGeometry args={[0.15, 4]} />
+            <meshStandardMaterial color="#e8e4d2" roughness={0.9} />
+          </mesh>
+        ))}
+      </group>
 
       {/* ── Assets ── */}
       <Interactive id="datacenter" select={select} hover={hover}>
@@ -276,7 +317,7 @@ export default function Scene() {
       </Interactive>
 
       <Interactive id="loadbank" select={select} hover={hover}>
-        <group position={POS.loadbank} rotation={[0, -Math.PI / 14, 0]}>
+        <group position={POS.loadbank}>
           <LoadBanks p={pal("loadbank")} active={loadbankActive} />
         </group>
       </Interactive>
@@ -288,29 +329,29 @@ export default function Scene() {
       </Interactive>
 
       <Interactive id="backupcontrol" select={select} hover={hover}>
-        <group position={POS.backupcontrol} rotation={[0, Math.PI / 5, 0]}>
+        <group position={POS.backupcontrol}>
           <ControlCenter p={pal("backupcontrol")} primary={false} />
         </group>
       </Interactive>
 
       {/* ── Power flows ── */}
       <FlowRoute
-        points={[[-38, 1.6, 16], [-22, 1.6, 9], [-11, 1.6, 4]]}
+        points={[[-44, 1.6, 22], [-30, 1.6, 12], [-16, 1.6, 4]]}
         color="#1d5bd8" active={genFlow} speed={0.14} count={12}
       />
       <FlowRoute
-        points={[[11, 1.6, 2], [26, 1.6, 4], [36, 1.6, 5]]}
+        points={[[14, 1.6, 2], [22, 1.6, 5], [31, 1.6, 8]]}
         color="#0891b2" active={dcFlow} speed={0.16} count={14}
       />
       <FlowRoute
-        points={[[-28, 1.6, -18], [-17, 1.6, -9], [-11, 1.6, -3]]}
+        points={[[-34, 1.6, -24], [-25, 1.6, -14], [-16, 1.6, -6]]}
         color={bessMode === "charging" ? "#059669" : "#d97706"}
         active={bessFlow}
         dir={bessMode === "charging" ? -1 : 1}
         speed={0.18} count={10}
       />
       <FlowRoute
-        points={[[-50, 1.6, -30], [-32, 1.6, -20], [-13, 1.6, -6]]}
+        points={[[-72, 1.6, -28], [-44, 1.6, -13], [-18, 1.6, -5]]}
         color="#059669" active={solarFlow} speed={0.12} count={solarT > 0.8 ? 16 : 8}
       />
       <FlowRoute
@@ -320,7 +361,7 @@ export default function Scene() {
       />
       {/* commissioning / black-start: generation stabilized against load banks */}
       <FlowRoute
-        points={[[-40, 1.6, 28], [-36, 1.6, 35], [-33, 1.6, 40]]}
+        points={[[-54, 1.6, 33], [-56, 1.6, 39], [-58, 1.6, 44]]}
         color="#ea580c" active={flowsOn && loadbankActive} speed={0.18} count={8}
       />
 

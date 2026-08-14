@@ -150,19 +150,19 @@ export function HighlightRing({
 
 // ── Camera rig ───────────────────────────────────────────────────────────────
 
-export const DEFAULT_CAM = { pos: [74, 56, 78] as const, target: [-6, 0, 0] as const };
+export const DEFAULT_CAM = { pos: [82, 60, 88] as const, target: [-12, 0, 4] as const };
 
 export const ASSET_VIEWS: Record<AssetId, { pos: [number, number, number]; target: [number, number, number] }> = {
-  datacenter: { pos: [78, 32, 44], target: [46, 2, 6] },
-  generation: { pos: [-22, 26, 52], target: [-52, 2, 18] },
-  bess: { pos: [-10, 22, -50], target: [-36, 1, -24] },
-  solar: { pos: [-44, 26, -62], target: [-70, 1, -34] },
+  datacenter: { pos: [94, 34, 46], target: [58, 2, 8] },
+  generation: { pos: [-26, 28, 56], target: [-58, 2, 20] },
+  bess: { pos: [-16, 24, -60], target: [-44, 1, -30] },
+  solar: { pos: [-62, 30, -66], target: [-92, 1, -34] },
   switchyard: { pos: [26, 22, 26], target: [0, 2, 0] },
   poi: { pos: [36, 26, -14], target: [12, 3, -40] },
-  maincontrol: { pos: [38, 18, 52], target: [16, 2, 30] },
-  backupcontrol: { pos: [-56, 18, 68], target: [-78, 2, 44] },
-  otnetwork: { pos: [50, 70, 50], target: [-10, 6, 0] },
-  loadbank: { pos: [-14, 14, 58], target: [-32, 1, 42] },
+  maincontrol: { pos: [44, 16, 66], target: [20, 2, 42] },
+  backupcontrol: { pos: [-76, 18, 68], target: [-98, 2, 42] },
+  otnetwork: { pos: [55, 75, 55], target: [-12, 6, 4] },
+  loadbank: { pos: [-40, 14, 66], target: [-58, 1, 48] },
 };
 
 export function CameraRig({
